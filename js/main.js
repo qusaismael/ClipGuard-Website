@@ -5,6 +5,7 @@ const navLinks = document.querySelector('.nav-links');
 if (hamburger) {
     hamburger.addEventListener('click', () => {
         navLinks.classList.toggle('active');
+        hamburger.setAttribute('aria-expanded', navLinks.classList.contains('active'));
         
         // Animate hamburger
         hamburger.classList.toggle('active');
@@ -15,14 +16,24 @@ if (hamburger) {
         link.addEventListener('click', () => {
             navLinks.classList.remove('active');
             hamburger.classList.remove('active');
+            hamburger.setAttribute('aria-expanded', 'false');
         });
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && navLinks.classList.contains('active')) {
+            navLinks.classList.remove('active');
+            hamburger.classList.remove('active');
+            hamburger.setAttribute('aria-expanded', 'false');
+            hamburger.focus();
+        }
     });
 }
 
 // Copy Code Buttons
 document.querySelectorAll('.copy-btn').forEach(button => {
     button.addEventListener('click', async function() {
-        const code = this.getAttribute('data-code').replace(/&#10;/g, '\n');
+        const code = this.closest('.code-block').querySelector('code').textContent.trim();
         
         try {
             await navigator.clipboard.writeText(code);
